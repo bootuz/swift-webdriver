@@ -694,6 +694,22 @@ public enum Requests {
         public var method: HTTPMethod { .post }
     }
 
+    public struct WindowFullScreen: Request {
+        public var session: String
+        public var windowHandle: String 
+
+        public var pathComponents: [String] { ["session", session, "window", windowHandle, "fullscreen"] }
+        public var method: HTTPMethod { .post }
+
+        public typealias Response = ResponseWithValue<ResponseValue>
+        public struct ResponseValue: Codable {
+            public var x: Double
+            public var y: Double
+            public var width: Double
+            public var height: Double
+        }
+    }
+
     // https://www.selenium.dev/documentation/legacy/json_wire_protocol/#sessionsessionidwindow_handle
     public struct SessionWindowHandle: Request {
         public var session: String 
