@@ -267,6 +267,13 @@ class APIToRequestMappingTests: XCTestCase {
         try session.window(handle: "myWindow").maximize()
     }
 
+    func testFullScreenWindow() throws {
+        let mockWebDriver: MockWebDriver = MockWebDriver()
+        let session: Session = Session(webDriver: mockWebDriver, existingId: "mySession")
+        mockWebDriver.expect(path: "session/mySession/window/myWindow/fullscreen", method: .post)
+        try session.window(handle: "myWindow").fullscreen()
+    }
+
     func testWindowHandle() throws {
         let mockWebDriver: MockWebDriver = MockWebDriver()
         let session = Session(webDriver: mockWebDriver, existingId: "mySession")
