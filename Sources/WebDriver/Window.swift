@@ -43,4 +43,10 @@ public struct Window {
     public func maximize() throws {
         try webDriver.send(Requests.WindowMaximize(session: session.id, windowHandle: handle))
     }
+
+    /// Full screen specific window if :windowHandle is "current" the current window will be full screened
+    public func fullscreen() throws {
+        try webDriver.send(Requests.WindowFullScreen(session: session.id, windowHandle: handle))
+    }
+
 }
