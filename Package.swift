@@ -6,6 +6,7 @@ let package = Package(
     name: "swift-webdriver",
     products: [
         .library(name: "WebDriver", targets: ["WebDriver"]),
+        .library(name: "ChromiumDriver", targets: ["ChromiumDriver"]),
     ],
     targets: [
         .target(
@@ -15,6 +16,11 @@ let package = Package(
         .target(
             name: "TestsCommon",
             path: "Tests/Common"),
+        .target(
+            name: "ChromiumDriver",
+            dependencies: ["WebDriver"],
+            path: "Sources/ChromiumDriver",
+            exclude: ["CMakeLists.txt"]),
         .testTarget(
             name: "UnitTests",
             dependencies: ["TestsCommon", "WebDriver"],

@@ -57,15 +57,7 @@ public class ChromiumDriver: WebDriver {
         process.terminate()
         self.process = nil
     }
-    
-    /// Creates a new Chromium session with specified capabilities
-    /// - Parameters:
-    ///   - capabilities: Chromium-specific capabilities
-    /// - Returns: A new Session instance
-    /// - Throws: Error if the session cannot be created
-    public func createSession(capabilities: ChromiumCapabilities = ChromiumCapabilities()) throws -> Session {
-        return try Session(webDriver: self, desiredCapabilities: capabilities)
-    }
+
     
     /// Waits for ChromeDriver to be ready to accept connections
     /// - Parameter timeout: Maximum time to wait in seconds
