@@ -34,11 +34,8 @@ public class ChromiumDriver: WebDriver {
     /// Static method to create and start a ChromiumDriver instance
     /// - Returns: A configured ChromiumDriver instance
     /// - Throws: Error if the driver cannot be started
-    public static func start() throws -> ChromiumDriver {
-        guard let chromeDriverPath = findChromeDriver() else {
-            throw ChromiumDriverError.browserNotFound
-        }
-        return try ChromiumDriver(chromeDriverPath: chromeDriverPath)
+    public static func start(path: String) throws -> ChromiumDriver {
+        return try ChromiumDriver(chromeDriverPath: path)
     }
     
     /// Starts the ChromeDriver process
@@ -101,99 +98,11 @@ public class ChromiumDriver: WebDriver {
     public func isInconclusiveInteraction(error: ErrorResponse.Status) -> Bool {
         // For Chromium, certain errors might indicate temporary issues that can be retried
         switch error {
-        case .staleElementReference, .elementNotVisible, .elementIsNotSelectable:
+            case .staleElementReference, .elementNotVisible, .elementIsNotSelectable, .noSuchDriver:
             return true
         default:
             return false
         }
-    }
-    
-    /// Helper method to set page load strategy
-    /// - Parameters:
-    ///   - strategy: The page load strategy ("normal", "eager", or "none")
-    /// - Returns: Updated capabilities
-    public static func withPageLoadStrategy(_ strategy: String, capabilities: ChromiumCapabilities = ChromiumCapabilities()) -> ChromiumCapabilities {
-        let caps = capabilities
-        caps.setWindowRect = true
-        
-        // Add strategy as a custom capability
-        return caps
-    }
-    
-    /// Helper method to create capabilities with headless mode
-    /// - Returns: Capabilities configured for headless operation
-    public static func headlessCapabilities() -> ChromiumCapabilities {
-        let caps = ChromiumCapabilities()
-        caps.headless = true
-        return caps
-    }
-    
-    /// Static utility to find installed Chrome/Chromium browsers
-    /// - Returns: Path to the browser if found, nil otherwise
-    public static func findChromiumBrowser() -> String? {
-        let possiblePaths: [String]
-        
-        #if os(macOS)
-        possiblePaths = [
-            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-            "/Applications/Chromium.app/Contents/MacOS/Chromium"
-        ]
-        #elseif os(Linux)
-        possiblePaths = [
-            "/usr/bin/google-chrome",
-            "/usr/bin/chromium-browser",
-            "/snap/bin/chromium"
-        ]
-        #elseif os(Windows)
-        possiblePaths = [
-            "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-            "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-        ]
-        #else
-        possiblePaths = []
-        #endif
-        
-        for path in possiblePaths {
-            if FileManager.default.fileExists(atPath: path) {
-                return path
-            }
-        }
-        
-        return nil
-    }
-    
-    /// Static utility to find ChromeDriver
-    /// - Returns: Path to ChromeDriver if found, nil otherwise
-    public static func findChromeDriver() -> String? {
-        let possiblePaths: [String]
-        
-        #if os(macOS)
-        possiblePaths = [
-            "/usr/local/bin/chromedriver",
-            "/opt/homebrew/bin/chromedriver",
-            "/Applications/Google Chrome.app/Contents/MacOS/chromedriver"
-        ]
-        #elseif os(Linux)
-        possiblePaths = [
-            "/usr/bin/chromedriver",
-            "/usr/local/bin/chromedriver"
-        ]
-        #elseif os(Windows)
-        possiblePaths = [
-            "C:\\Program Files\\ChromeDriver\\chromedriver.exe",
-            "C:\\WebDriver\\chromedriver.exe"
-        ]
-        #else
-        possiblePaths = []
-        #endif
-        
-        for path in possiblePaths {
-            if FileManager.default.fileExists(atPath: path) {
-                return path
-            }
-        }
-        
-        return nil
     }
 }
 
