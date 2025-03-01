@@ -1,8 +1,9 @@
 import Foundation
+import WebDriver
 
 /// Manages a Chromium browser process separate from ChromeDriver
-public class ChromiumProcess {
-    private var process: Process?
+public class ChromiumProcessBrowser {
+    private var process: ChromiumProcess?
     private let chromiumPath: String
     private let arguments: [String]
     
@@ -32,7 +33,7 @@ public class ChromiumProcess {
     public func start(userDataDir: String? = nil, headless: Bool = false, additionalArgs: [String] = []) throws {
         guard process == nil else { return }
         
-        let process = Process()
+        let process = ChromiumProcess()
         process.executableURL = URL(fileURLWithPath: chromiumPath)
         
         var args = self.arguments
@@ -54,9 +55,11 @@ public class ChromiumProcess {
         
         process.arguments = args
         
+        #if os(macOS)
         let outputPipe = Pipe()
         process.standardOutput = outputPipe
         process.standardError = outputPipe
+        #endif
         
         try process.run()
         self.process = process

@@ -2,11 +2,12 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import WebDriver
 
 /// Manages Chromium browser instances and provides WebDriver functionality for Chromium browsers.
 public class ChromiumDriver: WebDriver {
     private let httpDriver: HTTPWebDriver
-    private var process: Process?
+    private var process: ChromiumProcess?
     private let chromeDriverPath: String
     private let port: Int
     
@@ -30,18 +31,30 @@ public class ChromiumDriver: WebDriver {
         try? stopChromeDriver()
     }
     
+    /// Static method to create and start a ChromiumDriver instance
+    /// - Returns: A configured ChromiumDriver instance
+    /// - Throws: Error if the driver cannot be started
+    public static func start() throws -> ChromiumDriver {
+        guard let chromeDriverPath = findChromeDriver() else {
+            throw ChromiumDriverError.browserNotFound
+        }
+        return try ChromiumDriver(chromeDriverPath: chromeDriverPath)
+    }
+    
     /// Starts the ChromeDriver process
     /// - Throws: Error if the driver cannot be started
     public func startChromeDriver() throws {
         guard process == nil else { return }
         
-        let process = Process()
+        let process = ChromiumProcess()
         process.executableURL = URL(fileURLWithPath: chromeDriverPath)
         process.arguments = ["--port=\(port)"]
         
+        #if os(macOS)
         let outputPipe = Pipe()
         process.standardOutput = outputPipe
         process.standardError = outputPipe
+        #endif
         
         try process.run()
         self.process = process
@@ -57,7 +70,6 @@ public class ChromiumDriver: WebDriver {
         process.terminate()
         self.process = nil
     }
-
     
     /// Waits for ChromeDriver to be ready to accept connections
     /// - Parameter timeout: Maximum time to wait in seconds

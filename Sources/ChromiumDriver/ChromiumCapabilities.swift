@@ -1,4 +1,5 @@
 import Foundation
+import WebDriver
 
 /// Chromium-specific capabilities for WebDriver sessions.
 public class ChromiumCapabilities: Capabilities {
