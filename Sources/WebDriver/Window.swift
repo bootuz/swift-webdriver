@@ -46,7 +46,12 @@ public struct Window {
 
     /// Full screen specific window if :windowHandle is "current" the current window will be full screened
     public func fullscreen() throws {
-        try webDriver.send(Requests.WindowFullScreen(session: session.id, windowHandle: handle))
+        do {
+            try webDriver.send(Requests.WindowFullScreen(session: session.id, windowHandle: handle))
+        } catch {
+            print(error)
+            print(error.localizedDescription)
+        }
     }
 
 }
